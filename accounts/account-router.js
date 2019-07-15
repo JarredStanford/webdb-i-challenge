@@ -12,7 +12,7 @@ const dbConnection = knex({
 const router = express.Router();
 
 //GET all accounts
-router.get('/', (req, res) => {
+/*router.get('/', (req, res) => {
     dbConnection('accounts')
         .then(accounts => {
             if (accounts.length > 0) {
@@ -28,10 +28,27 @@ router.get('/', (req, res) => {
                 message: "There was an error retrieving the accounts."
             })
         })
+})*/
+
+router.get('/', async (req, res) => {
+    try {
+        const accounts = await dbConnection('accounts')
+        if (accounts.length > 0) {
+            res.status(200).json(accounts)
+        } else {
+            res.status(400).json({
+                message: "There are no accounts to retrieve."
+            })
+        }
+    } catch (err) {
+        res.status(500).json({
+            message: "There was an error retrieving the accounts."
+        })
+    }
 })
 
 //GET account by id
-router.get('/:id', (req, res) => {
+/*router.get('/:id', (req, res) => {
     dbConnection('accounts')
         .where({ id: req.params.id })
         .then(account => {
@@ -49,6 +66,23 @@ router.get('/:id', (req, res) => {
                 message: "There was an error retrieving the account."
             })
         })
+})*/
+
+router.get('/:id', async (req, res) => {
+    try {
+        const account = await dbConnection('accounts').where({ id: req.params.id })
+        if (account.length > 0) {
+            res.status(200).json(account)
+        } else {
+            res.status(400).json({
+                message: "The account with that ID could not be found."
+            })
+        }
+    } catch (err) {
+        res.status(500).json({
+            message: "There was an error retrieving the account."
+        })
+    }
 })
 
 //GET accounts by name
